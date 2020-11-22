@@ -1,31 +1,71 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: minecraft
+  name: minecraft-claim
+  labels:
+    app: minecraft
 spec:
   storageClassName: longhorn
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: 20Gi
 ---
-apiVersion: serving.knative.dev/v1 # Current version of Knative
-kind: Service
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: minecraft # The name of the app
+  name: minecraft-deployment
+  labels:
+    app: minecraft
 spec:
+  replicas: 1
   template:
+    metadata:
+      name: minecraft
+      labels:
+        app: minecraft
     spec:
       containers:
-        - image: registry.lan/minecraft # Reference to the image of the app
-          ports:
-            - name: http1
-              containerPort: 25565
-#      TODO: Figure out how to attach volumes
-#      volumes:
-#        - name: server
-#          hostPath:
-#            path: /server/world
-#          persistentVolumeClaim:
-#            claimName: minecraft
+        - name: minecraft
+          image: registry.lan/minecraft
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /server/world
+              name: world
+      restartPolicy: Always
+      volumes:
+        - name: world
+          persistentVolumeClaim:
+            claimName: minecraft-claim
+  selector:
+    matchLabels:
+      app: minecraft
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minecraft-service
+spec:
+  selector:
+    app: minecraft
+  ports:
+    - port: 25565
+  type: NodePort
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-wildcard-host
+spec:
+  rules:
+    - host: "minecraft.lan"
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: minecraft-service
+                port:
+                  number: 25565
