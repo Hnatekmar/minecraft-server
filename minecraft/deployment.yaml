@@ -19,6 +19,9 @@ spec:
     spec:
       containers:
         - image: registry.lan/minecraft # Reference to the image of the app
+          ports:
+            - name: serverPort
+              containerPort: 25565
 #      TODO: Figure out how to attach volumes
 #      volumes:
 #        - name: server
