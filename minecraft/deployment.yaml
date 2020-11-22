@@ -4,6 +4,8 @@ metadata:
   name: minecraft
 spec:
   storageClassName: longhorn
+  accessModes:
+    - ReadWriteMany
   resources:
     requests:
       storage: 10Gi
