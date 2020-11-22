@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  generateName: minecraft-builder
+  name: build-minecraft
   namespace: argo
 spec:
   entrypoint: hardwired-artifact
@@ -18,7 +18,7 @@ spec:
       container:
         image: docker:19.03.13
         command: [sh, -c]
-        args: ["sleep 5 && cd /src/minecraft && docker build . -t registry.lan/minecraft && docker push registry.lan/minecraft"]
+        args: ["sleep 5 && cd /src/minecraft && docker build . -t registry.lan/minecraft"]
         env:
           - name: DOCKER_HOST               # the docker daemon can be access on the standard port on localhost
             value: 127.0.0.1
