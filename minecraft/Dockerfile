@@ -11,3 +11,5 @@ WORKDIR /server
 #RUN wget ${SERVER_URL}
 #
 #RUN unzip *.zip
+
+CMD watch "sleep 1"
