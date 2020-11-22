@@ -28,7 +28,7 @@ spec:
       containers:
         - name: minecraft
           image: registry.lan/minecraft
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
       restartPolicy: Always
   selector:
     matchLabels:
