@@ -20,7 +20,7 @@ spec:
       containers:
         - image: registry.lan/minecraft # Reference to the image of the app
           ports:
-            - name: http
+            - name: http1
               containerPort: 25565
 #      TODO: Figure out how to attach volumes
 #      volumes:
