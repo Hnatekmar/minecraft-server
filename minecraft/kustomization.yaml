@@ -1,5 +1,0 @@
-commonLabels:
-  app: minecraft
-resources:
-  - build.yaml
-  - deployment.yaml
