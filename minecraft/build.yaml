@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: minecraft-builder
+  namespace: argo
+spec:
+  entrypoint: hardwired-artifact
+  templates:
+    - name: hardwired-artifact
+      inputs:
+        artifacts:
+          # Check out the master branch of the argo repo and place it at /src
+          # revision can be anything that git checkout accepts: branch, commit, tag, etc.
+          - name: argo-source
+            path: /src
+            git:
+              repo: https://github.com/argoproj/argo.git
+      container:
+        image: docker:19.03.13
+        command: [sh, -c]
+        args: ["cd /src/minecraft && docker build . -t registry.lan/minecraft && docker push registry.lan/minecraft"]
