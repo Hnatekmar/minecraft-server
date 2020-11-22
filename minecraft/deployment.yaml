@@ -10,26 +10,18 @@ spec:
     requests:
       storage: 10Gi
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: serving.knative.dev/v1 # Current version of Knative
+kind: Service
 metadata:
-  name: minecraft
-  labels:
-    app: minecraft
+  name: minecraft # The name of the app
 spec:
-  replicas: 1
   template:
-    metadata:
-      name: minecraft
-      labels:
-        app: minecraft
     spec:
       containers:
-        - name: minecraft
-          image: registry.lan/minecraft
-          imagePullPolicy: Always
-      restartPolicy: Always
-  selector:
-    matchLabels:
-      app: minecraft
-
+        - image: registry.lan/minecraft # Reference to the image of the app
+      volumes:
+        - name: server
+          hostPath:
+            path: /server/world
+          persistentVolumeClaim:
+            claimName: minecraft
