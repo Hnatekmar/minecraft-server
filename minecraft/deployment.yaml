@@ -51,7 +51,7 @@ spec:
     app: minecraft
   ports:
     - port: 25565
-  type: NodePort
+  type: ClusterIP
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
