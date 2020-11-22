@@ -19,9 +19,10 @@ spec:
     spec:
       containers:
         - image: registry.lan/minecraft # Reference to the image of the app
-      volumes:
-        - name: server
-          hostPath:
-            path: /server/world
-          persistentVolumeClaim:
-            claimName: minecraft
+#      TODO: Figure out how to attach volumes
+#      volumes:
+#        - name: server
+#          hostPath:
+#            path: /server/world
+#          persistentVolumeClaim:
+#            claimName: minecraft
