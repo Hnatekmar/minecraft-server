@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
-  name: build-minecraft
+  generateName: build-minecraft-
   namespace: argo
 spec:
   entrypoint: hardwired-artifact
@@ -9,8 +9,6 @@ spec:
     - name: hardwired-artifact
       inputs:
         artifacts:
-          # Check out the master branch of the argo repo and place it at /src
-          # revision can be anything that git checkout accepts: branch, commit, tag, etc.
           - name: argo-source
             path: /src
             git:
@@ -24,14 +22,12 @@ spec:
             value: 127.0.0.1
       sidecars:
         - name: dind
-          image: docker:19.03.13-dind          # Docker already provides an image for running a Docker daemon
+          image: docker:dind          # Docker already provides an image for running a Docker daemon
+          args:
+            - "--insecure-registry=http://registry.lan"
           env:
             - name: DOCKER_TLS_CERTDIR         # Docker TLS env config
               value: ""
           securityContext:
-            privileged: true                # the Docker daemon can only run in a privileged container
-          # mirrorVolumeMounts will mount the same volumes specified in the main container
-          # to the sidecar (including artifacts), at the same mountPaths. This enables
-          # dind daemon to (partially) see the same filesystem as the main container in
-          # order to use features such as docker volume binding.
+            privileged: true
           mirrorVolumeMounts: true
